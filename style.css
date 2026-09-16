@@ -40,9 +40,11 @@ h1 { margin: 0; font-size: 34px; }
   background: white;
 }
 .todo-form select { flex: 0 0 auto; }
+#todo-start-time { flex: 0 0 auto; width: 120px; }
 .todo-form input:focus,
 .todo-form select:focus,
-.priority-select:focus { outline: 2px solid #202124; outline-offset: 1px; }
+.priority-select:focus,
+.start-time-input:focus { outline: 2px solid #202124; outline-offset: 1px; }
 button { font: inherit; cursor: pointer; }
 .todo-form button {
   border: 0;
@@ -65,6 +67,7 @@ button { font: inherit; cursor: pointer; }
 }
 .todo-item .title { flex: 1; overflow-wrap: anywhere; }
 .todo-item.completed .title { color: #9ca3af; text-decoration: line-through; }
+.start-time-input,
 .priority-select {
   border: 1px solid #d1d5db;
   border-radius: 8px;
@@ -73,6 +76,7 @@ button { font: inherit; cursor: pointer; }
   font: inherit;
   font-size: 14px;
 }
+.start-time-input { width: 108px; }
 .priority-high { color: #b42318; border-color: #f0b4ae; }
 .priority-medium { color: #765b00; border-color: #ddc870; }
 .priority-low { color: #176b3a; border-color: #9ad0ae; }
@@ -92,11 +96,13 @@ footer { border-top: 1px solid #eee; margin-top: 24px; padding-top: 18px; color:
 @media (max-width: 480px) {
   .app { padding: 24px 18px; }
   .todo-form { flex-direction: column; }
+  #todo-start-time { width: 100%; }
   .todo-form button { padding: 12px; }
   .todo-item {
     display: grid;
     grid-template-columns: auto minmax(0, 1fr) auto;
   }
-  .priority-select { grid-column: 2; justify-self: start; }
+  .start-time-input { grid-column: 2; grid-row: 2; }
+  .priority-select { grid-column: 2; grid-row: 3; justify-self: start; }
   .delete-button { grid-column: 3; grid-row: 1; }
 }
