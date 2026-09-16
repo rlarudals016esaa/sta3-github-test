@@ -10,6 +10,7 @@ const form = document.querySelector("#todo-form");
 const input = document.querySelector("#todo-input");
 const priorityInput = document.querySelector("#todo-priority");
 const startTimeInput = document.querySelector("#todo-start-time");
+const searchInput = document.querySelector("#search-input");
 const list = document.querySelector("#todo-list");
 const remainingCount = document.querySelector("#remaining-count");
 const emptyState = document.querySelector("#empty-state");
@@ -75,10 +76,16 @@ function saveTodos() {
 function render() {
   list.innerHTML = "";
 
+  const query = searchInput.value.toLocaleLowerCase();
   const visibleTodos = todos.filter((todo) => {
-    if (currentFilter === "active") return !todo.completed;
-    if (currentFilter === "completed") return todo.completed;
-    return true;
+    const matchesStatus =
+      currentFilter === "active"
+        ? !todo.completed
+        : currentFilter === "completed"
+          ? todo.completed
+          : true;
+
+    return matchesStatus && todo.title.toLocaleLowerCase().includes(query);
   });
 
   visibleTodos.forEach((todo) => {
@@ -205,5 +212,7 @@ filterButtons.forEach((button) => {
     render();
   });
 });
+
+searchInput.addEventListener("input", render);
 
 render();
