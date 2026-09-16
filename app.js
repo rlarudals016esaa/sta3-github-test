@@ -20,11 +20,14 @@ function loadTodos() {
   try {
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
     if (Array.isArray(saved)) {
-      return saved.map((todo) => ({
+      const normalizedTodos = saved.map((todo) => ({
         ...todo,
         priority: normalizePriority(todo.priority),
         startTime: normalizeStartTime(todo.startTime),
       }));
+      const sortedTodos = sortTodosByStartTime(normalizedTodos);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(sortedTodos));
+      return sortedTodos;
     }
   } catch (_) {}
 
@@ -44,6 +47,23 @@ function normalizeStartTime(startTime) {
   return typeof startTime === "string" && timePattern.test(startTime)
     ? startTime
     : "";
+}
+
+function sortTodosByStartTime(items) {
+  return items
+    .map((todo, index) => ({ todo, index }))
+    .sort((first, second) => {
+      const firstTime = first.todo.startTime;
+      const secondTime = second.todo.startTime;
+
+      if (!firstTime && !secondTime) return first.index - second.index;
+      if (!firstTime) return 1;
+      if (!secondTime) return -1;
+      if (firstTime === secondTime) return first.index - second.index;
+
+      return firstTime < secondTime ? -1 : 1;
+    })
+    .map(({ todo }) => todo);
 }
 
 function saveTodos() {
@@ -115,6 +135,7 @@ function addTodo(title, priority = DEFAULT_PRIORITY, startTime = "") {
     priority: normalizePriority(priority),
     startTime: normalizeStartTime(startTime),
   });
+  todos = sortTodosByStartTime(todos);
   saveTodos();
   render();
 }
@@ -133,6 +154,7 @@ function updateTodoStartTime(id, startTime) {
       ? { ...todo, startTime: normalizeStartTime(startTime) }
       : todo
   );
+  todos = sortTodosByStartTime(todos);
   saveTodos();
   render();
 }
