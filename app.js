@@ -9,6 +9,7 @@ const PRIORITY_LABELS = {
 const form = document.querySelector("#todo-form");
 const input = document.querySelector("#todo-input");
 const priorityInput = document.querySelector("#todo-priority");
+const startTimeInput = document.querySelector("#todo-start-time");
 const list = document.querySelector("#todo-list");
 const remainingCount = document.querySelector("#remaining-count");
 const emptyState = document.querySelector("#empty-state");
@@ -22,19 +23,27 @@ function loadTodos() {
       return saved.map((todo) => ({
         ...todo,
         priority: normalizePriority(todo.priority),
+        startTime: normalizeStartTime(todo.startTime),
       }));
     }
   } catch (_) {}
 
   return [
-    { id: crypto.randomUUID(), title: "강의 자료 만들기", completed: false, priority: DEFAULT_PRIORITY },
-    { id: crypto.randomUUID(), title: "이메일 답장하기", completed: true, priority: DEFAULT_PRIORITY },
-    { id: crypto.randomUUID(), title: "운동하기", completed: false, priority: DEFAULT_PRIORITY },
+    { id: crypto.randomUUID(), title: "강의 자료 만들기", completed: false, priority: DEFAULT_PRIORITY, startTime: "" },
+    { id: crypto.randomUUID(), title: "이메일 답장하기", completed: true, priority: DEFAULT_PRIORITY, startTime: "" },
+    { id: crypto.randomUUID(), title: "운동하기", completed: false, priority: DEFAULT_PRIORITY, startTime: "" },
   ];
 }
 
 function normalizePriority(priority) {
   return Object.hasOwn(PRIORITY_LABELS, priority) ? priority : DEFAULT_PRIORITY;
+}
+
+function normalizeStartTime(startTime) {
+  const timePattern = /^([01]\d|2[0-3]):[0-5]\d$/;
+  return typeof startTime === "string" && timePattern.test(startTime)
+    ? startTime
+    : "";
 }
 
 function saveTodos() {
@@ -58,6 +67,15 @@ function render() {
     title.className = "title";
     title.textContent = todo.title;
 
+    const startTime = document.createElement("input");
+    startTime.type = "time";
+    startTime.className = "start-time-input";
+    startTime.value = todo.startTime;
+    startTime.setAttribute("aria-label", `${todo.title} 시작시간`);
+    startTime.addEventListener("change", () =>
+      updateTodoStartTime(todo.id, startTime.value)
+    );
+
     const prioritySelect = document.createElement("select");
     prioritySelect.className = `priority-select priority-${todo.priority}`;
     prioritySelect.setAttribute("aria-label", `${todo.title} 우선순위`);
@@ -80,7 +98,7 @@ function render() {
     deleteButton.textContent = "삭제";
     deleteButton.addEventListener("click", () => deleteTodo(todo.id));
 
-    item.append(checkbox, title, prioritySelect, deleteButton);
+    item.append(checkbox, title, startTime, prioritySelect, deleteButton);
     list.appendChild(item);
   });
 
@@ -89,12 +107,13 @@ function render() {
   emptyState.hidden = todos.length > 0;
 }
 
-function addTodo(title, priority = DEFAULT_PRIORITY) {
+function addTodo(title, priority = DEFAULT_PRIORITY, startTime = "") {
   todos.unshift({
     id: crypto.randomUUID(),
     title,
     completed: false,
     priority: normalizePriority(priority),
+    startTime: normalizeStartTime(startTime),
   });
   saveTodos();
   render();
@@ -103,6 +122,16 @@ function addTodo(title, priority = DEFAULT_PRIORITY) {
 function updateTodoPriority(id, priority) {
   todos = todos.map((todo) =>
     todo.id === id ? { ...todo, priority: normalizePriority(priority) } : todo
+  );
+  saveTodos();
+  render();
+}
+
+function updateTodoStartTime(id, startTime) {
+  todos = todos.map((todo) =>
+    todo.id === id
+      ? { ...todo, startTime: normalizeStartTime(startTime) }
+      : todo
   );
   saveTodos();
   render();
@@ -127,9 +156,10 @@ form.addEventListener("submit", (event) => {
   const title = input.value.trim();
   if (!title) return;
 
-  addTodo(title, priorityInput.value);
+  addTodo(title, priorityInput.value, startTimeInput.value);
   input.value = "";
   priorityInput.value = DEFAULT_PRIORITY;
+  startTimeInput.value = "";
   input.focus();
 });
 
