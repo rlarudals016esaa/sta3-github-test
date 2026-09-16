@@ -13,8 +13,10 @@ const startTimeInput = document.querySelector("#todo-start-time");
 const list = document.querySelector("#todo-list");
 const remainingCount = document.querySelector("#remaining-count");
 const emptyState = document.querySelector("#empty-state");
+const filterButtons = document.querySelectorAll(".status-filter");
 
 let todos = loadTodos();
+let currentFilter = "all";
 
 function loadTodos() {
   try {
@@ -73,7 +75,13 @@ function saveTodos() {
 function render() {
   list.innerHTML = "";
 
-  todos.forEach((todo) => {
+  const visibleTodos = todos.filter((todo) => {
+    if (currentFilter === "active") return !todo.completed;
+    if (currentFilter === "completed") return todo.completed;
+    return true;
+  });
+
+  visibleTodos.forEach((todo) => {
     const item = document.createElement("li");
     item.className = `todo-item${todo.completed ? " completed" : ""}`;
 
@@ -124,7 +132,13 @@ function render() {
 
   const remaining = todos.filter((todo) => !todo.completed).length;
   remainingCount.textContent = `${remaining}개의 할 일 남음`;
-  emptyState.hidden = todos.length > 0;
+  emptyState.hidden = visibleTodos.length > 0;
+
+  filterButtons.forEach((button) => {
+    const isActive = button.dataset.filter === currentFilter;
+    button.classList.toggle("active", isActive);
+    button.setAttribute("aria-pressed", String(isActive));
+  });
 }
 
 function addTodo(title, priority = DEFAULT_PRIORITY, startTime = "") {
@@ -183,6 +197,13 @@ form.addEventListener("submit", (event) => {
   priorityInput.value = DEFAULT_PRIORITY;
   startTimeInput.value = "";
   input.focus();
+});
+
+filterButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    currentFilter = button.dataset.filter;
+    render();
+  });
 });
 
 render();

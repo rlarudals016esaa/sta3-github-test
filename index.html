@@ -29,6 +29,11 @@
     </form>
 
     <section class="todo-section" aria-label="할 일 목록">
+      <div class="status-filters" role="group" aria-label="완료 상태 필터">
+        <button type="button" class="status-filter active" data-filter="all" aria-pressed="true">전체</button>
+        <button type="button" class="status-filter" data-filter="active" aria-pressed="false">진행 중</button>
+        <button type="button" class="status-filter" data-filter="completed" aria-pressed="false">완료</button>
+      </div>
       <ul id="todo-list" class="todo-list"></ul>
       <div id="empty-state" class="empty-state">아직 할 일이 없어요.</div>
     </section>
