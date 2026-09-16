@@ -55,6 +55,16 @@ button { font: inherit; cursor: pointer; }
   font-weight: 700;
 }
 
+.search-field { margin-top: 12px; }
+.search-field input {
+  width: 100%;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  padding: 12px 14px;
+  font: inherit;
+}
+.search-field input:focus { outline: 2px solid #202124; outline-offset: 1px; }
+
 .todo-section { margin-top: 24px; }
 .status-filters {
   display: flex;
