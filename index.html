@@ -17,6 +17,12 @@
     <form id="todo-form" class="todo-form">
       <label class="sr-only" for="todo-input">할 일</label>
       <input id="todo-input" type="text" placeholder="할 일을 입력하세요" autocomplete="off" />
+      <label class="sr-only" for="todo-priority">새 할 일 우선순위</label>
+      <select id="todo-priority">
+        <option value="high">높음</option>
+        <option value="medium" selected>보통</option>
+        <option value="low">낮음</option>
+      </select>
       <button type="submit">추가</button>
     </form>
 
