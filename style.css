@@ -49,6 +49,23 @@ button { font: inherit; cursor: pointer; }
 }
 
 .todo-section { margin-top: 24px; }
+.status-filters {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+.status-filter {
+  border: 1px solid #d1d5db;
+  border-radius: 999px;
+  padding: 7px 12px;
+  background: white;
+  color: #6b7280;
+  font-size: 14px;
+  font-weight: 700;
+}
+.status-filter:hover { border-color: #9ca3af; color: #202124; }
+.status-filter:focus-visible { outline: 2px solid #202124; outline-offset: 2px; }
+.status-filter.active { border-color: #202124; background: #202124; color: white; }
 .todo-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
 .todo-item {
   display: flex;
